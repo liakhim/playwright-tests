@@ -1,11 +1,12 @@
-// tests/login.test.js
+require('dotenv').config();
+
 const { test, expect } = require('@playwright/test');
-const {login} = require("../src/helpers");
+const { login } = require("../src/helpers");
 
 test('Проверка выхода', async ({ page }) => {
     await page.goto('/');
 
-    await login(page, 'jhkjhkjhkjhkjh@bk.ru', 'jhkjhkjhkjhkjh@bk.ru');
+    await login(page, process.env.USER_EMAIL, process.env.PASSWORD);
     await page.goto('/my-gates');
 
     await page.click(".profileAvatar")
