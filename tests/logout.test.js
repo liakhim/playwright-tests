@@ -1,7 +1,6 @@
-require('dotenv').config();
-
+// tests/login.test.js
 const { test, expect } = require('@playwright/test');
-const { login } = require("../src/helpers");
+const {login} = require("../src/helpers");
 
 test('Проверка выхода', async ({ page }) => {
     await page.goto('/');
