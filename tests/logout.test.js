@@ -10,6 +10,7 @@ test('Проверка выхода', async ({ page }) => {
 
     await page.click(".profileAvatar")
     await page.click('div._tooltip >> text="Log out"')
+
     // Проверка наличия определенного элемента
     await expect(page).toHaveURL('/');
 });
