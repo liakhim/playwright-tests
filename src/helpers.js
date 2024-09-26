@@ -1,3 +1,16 @@
+const winston = require('winston');
+
+// Настройка логгера
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.simple(),
+    transports: [
+        new winston.transports.Console(),
+        // Вы можете добавить другие транспорты, например, для записи в файл
+        // new winston.transports.File({ filename: 'combined.log' }),
+    ],
+});
+
 async function login(page, username, password) {
     // Переход на страницу логина
     // await page.goto('/login');
@@ -18,7 +31,6 @@ async function login(page, username, password) {
 async function details(page) {
     // Ожидаем конкретный API запрос и получаем его ответ
     const response = await page.waitForResponse(response => {
-            console.log(response.status())
             return response.url().includes('/api/details') && response.status() === 200
         }
     );
@@ -29,4 +41,4 @@ async function details(page) {
     return responseBody;
 }
 
-module.exports = { login, details };
+module.exports = { login, details, logger };
