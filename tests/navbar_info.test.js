@@ -11,6 +11,9 @@ test('Проверка названия плана:', async ({ page }) => {
 
     const user_details = await details(page);
 
+    console.log('user_details')
+    console.log(user_details.subscription_info.active_subscription.plan_name  + ' plan')
+
     const navbar_subscription_button = page.locator('._navbar__profile--button >> .blue-btn');
     await expect(navbar_subscription_button).toHaveText(user_details.subscription_info.active_subscription.plan_name + ' plan');
 });
