@@ -14,4 +14,19 @@ async function login(page, username, password) {
     await page.waitForURL('/my-gates');
 }
 
-module.exports = { login };
+// Функция для перехвата API-запроса и возврата данных
+async function details(page) {
+    // Ожидаем конкретный API запрос и получаем его ответ
+    const response = await page.waitForResponse(response => {
+            console.log(response.status())
+            return response.url().includes('/api/details') && response.status() === 200
+        }
+    );
+
+    // Получаем тело ответа
+    const responseBody = await response.json();
+
+    return responseBody;
+}
+
+module.exports = { login, details };
