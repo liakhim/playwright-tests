@@ -1,19 +1,6 @@
-const winston = require('winston');
-
-// Настройка логгера
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.simple(),
-    transports: [
-        new winston.transports.Console(),
-        // Вы можете добавить другие транспорты, например, для записи в файл
-        // new winston.transports.File({ filename: 'combined.log' }),
-    ],
-});
-
 async function login(page, username, password) {
     // Переход на страницу логина
-    // await page.goto('/login');
+    await page.goto('https://staging.fanfrick.com');
     await page.click('div.burger')
     await page.click('.signin-block button')
     // Ввод имени пользователя и пароля
@@ -29,16 +16,15 @@ async function login(page, username, password) {
 
 // Функция для перехвата API-запроса и возврата данных
 async function details(page) {
-    // Ожидаем конкретный API запрос и получаем его ответ
-    const response = await page.waitForResponse(response => {
-            return response.url().includes('/api/details') && response.status() === 200
-        }
+    await page.waitForLoadState('networkidle', { timeout: 60000 }); // Ждём, когда сетевые запросы завершатся
+
+    const response = await page.waitForResponse(
+        response => response.url().includes('/api/details') && response.status() === 200,
+        { timeout: 30000 } // Тайм-аут для конкретного запроса
     );
 
-    // Получаем тело ответа
     const responseBody = await response.json();
-
     return responseBody;
 }
 
-module.exports = { login, details, logger };
+module.exports = { login, details };
