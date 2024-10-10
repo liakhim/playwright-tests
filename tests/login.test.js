@@ -8,20 +8,26 @@ const stateFilePath = path.join(__dirname, 'state.json');
 async function loginAndSaveState(page) {
     // Пример логина (замените на ваш процесс логина)
     await login(page, process.env.USER_EMAIL, process.env.PASSWORD);
+
     // Сохранить состояние после успешного логина
     const storageState = await page.context().storageState();
-    fs.writeFileSync(stateFilePath, JSON.stringify(storageState));
+    fs.writeFileSync(stateFilePath, JSON.stringify(storageState), 'utf-8');
 }
 
-test.use({storageState: stateFilePath})
+test.use({
+    storageState: fs.existsSync(stateFilePath) ? stateFilePath : undefined
+});
 
 test.describe('Landing Tests', () => {
     test.beforeEach(async ({ page }) => {
-        if (fs.existsSync(stateFilePath)) {
-            // Если файл состояния существует, используем его
-            const storageState = JSON.parse(fs.readFileSync(stateFilePath, 'utf-8'));
-        } else {
-            // Если состояния нет, выполняем логин
+        await page.goto('https://staging.fanfrick.com');
+
+        const accessTokenExpireIn = await page.evaluate(() => {
+            return localStorage.getItem('access_token_expire_in');
+        });
+
+        if (!fs.existsSync(stateFilePath) || ((accessTokenExpireIn - Date.now())/ 1000 / 60 <= 0)) {
+            // Если файла состояния нет, выполняем логин и сохраняем состояние
             await loginAndSaveState(page);
         }
     });
@@ -34,7 +40,6 @@ test.describe('Landing Tests', () => {
 
     test('1. Тест текста в кнопке', async ({ page }) => {
         await page.goto('https://staging.fanfrick.com/');
-
         const button = page.locator('.image-block__main-info >> button');
         await expect(button).toHaveText('My campaigns');
     });
@@ -55,7 +60,7 @@ test.describe('Landing Tests', () => {
         await page.goto('https://staging.fanfrick.com');
         const button = page.locator('.grow-block__content >> .grow-block-button');
         await expect(button).toHaveText('How it works');
-        await page.click('.grow-block__content >> .grow-block-button')
+        await button.click();
         await page.waitForURL('/how-it-works');
     });
 });

@@ -16,7 +16,7 @@ async function login(page, username, password) {
     );
 
     // Логируем ответ (опционально) для отладки
-    console.log('Response from /api/details:', await response.json());
+    // console.log('Response from /api/details:', await response.json());
 
     // Ожидание перенаправления на главную страницу после успешного логина
     await page.waitForURL('/my-gates');
