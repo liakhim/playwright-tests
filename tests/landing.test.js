@@ -51,9 +51,20 @@ test.describe('Landing Tests', () => {
 
     test('5. Тест перехода на страницу Support', async ({ page }) => {
         await page.goto('https://staging.fanfrick.com');
-        const button = page.locator('.price-plans__content__item.dark >> .button-block >> button');
-        await expect(button).toHaveText('CONTACT US');
+        await page.click('div.burger')
+        const button = page.locator('.mobile-menu-content').locator('text=Support');
         await button.click();
         await page.waitForURL('/support');
+        const send_button = page.locator('.support-wrap >> .button-box >> button')
+        await expect(send_button).toHaveText('Create ticket');
+    });
+
+    test('5. Тест перехода на страницу Support через блок прайсинг', async ({ page }) => {
+        await page.goto('https://staging.fanfrick.com');
+        const button = page.locator('.price-plans__content').locator('.price-plans__content__item:has-text("Enterprise")').locator('.button-block >> button:has-text("Contact us")');
+        await button.click();
+        await page.waitForURL('/support');
+        const send_button = page.locator('.support-wrap >> .button-box >> button')
+        await expect(send_button).toHaveText('Create ticket');
     });
 });
