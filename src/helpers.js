@@ -15,24 +15,8 @@ async function login(page, username, password) {
         response.url().includes('/api/details') && response.status() === 200
     );
 
-    // Логируем ответ (опционально) для отладки
-    // console.log('Response from /api/details:', await response.json());
-
     // Ожидание перенаправления на главную страницу после успешного логина
     await page.waitForURL('/my-gates');
 }
 
-// Функция для перехвата API-запроса и возврата данных
-async function details(page) {
-    await page.waitForLoadState('networkidle', { timeout: 60000 }); // Ждём, когда сетевые запросы завершатся
-
-    const response = await page.waitForResponse(
-        response => response.url().includes('/api/details') && response.status() === 200,
-        { timeout: 30000 } // Тайм-аут для конкретного запроса
-    );
-
-    const responseBody = await response.json();
-    return responseBody;
-}
-
-module.exports = { login, details };
+module.exports = { login };
