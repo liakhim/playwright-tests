@@ -1,21 +1,24 @@
 import { test, expect } from '@playwright/test';
+import { AuthTest } from './AuthTest';
+import fs from "fs";
+import path from "path"; // Импортируем классы
 
-test.describe('Feedback Tests', () => {
+const stateFilePath = path.join(__dirname, 'state.json');
 
-    test('0. Тест перехода на страницу Support и создание фидбэка', async ({ page }) => {
+test.use({
+    storageState: fs.existsSync(stateFilePath) ? stateFilePath : undefined
+});
+
+test.describe('Ticket Tests', () => {
+
+    test('0. Тест перехода на страницу Support и создание тикета', async ({ page }) => {
         await page.goto('https://staging.fanfrick.com');
         await page.click('div.burger')
         const button = page.locator('.mobile-menu-content').locator('text=Support');
         await button.click();
         await page.waitForURL('/support');
         const send_button = page.locator('.support-wrap >> .button-box >> button')
-        await expect(send_button).toHaveText('Send message for feedback');
-
-        const input_name = page.locator('input[placeholder="Name"]');
-        await input_name.fill('Your Name');
-
-        const input_email = page.locator('input[placeholder="Email address"]');
-        await input_email.fill('test@mail.ru');
+        await expect(send_button).toHaveText('Create ticket');
 
         const textarea = page.locator('textarea[name="support-comment"]');
         await textarea.fill('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, commodi!')
