@@ -10,6 +10,11 @@ test.use({
 });
 
 test.describe('Ticket Tests', () => {
+    // Используем AuthTest (с логином)
+    test.beforeEach(async ({ page }) => {
+        const testInstance = new AuthTest(page); // Класс с логином
+        await testInstance.beforeEach(); // Логин будет выполнен перед каждым тестом
+    });
 
     test('0. Тест перехода на страницу Support и создание тикета', async ({ page }) => {
         await page.goto('https://staging.fanfrick.com');
@@ -20,8 +25,11 @@ test.describe('Ticket Tests', () => {
         const send_button = page.locator('.support-wrap >> .button-box >> button')
         await expect(send_button).toHaveText('Create ticket');
 
+        const date = new Date();
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
         const textarea = page.locator('textarea[name="support-comment"]');
-        await textarea.fill('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, commodi!')
+        await textarea.fill('Auto-test message ['+ formattedDate +']!')
         
         await send_button.click();
 

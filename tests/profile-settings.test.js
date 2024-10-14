@@ -17,7 +17,7 @@ test.describe('Profile Tests', () => {
         await testInstance.beforeEach(); // Логин будет выполнен перед каждым тестом
     });
 
-    test('0. Тест перехода на страницу Profile и проверка email', async ({ page }) => {
+    test('0. Тест перехода на страницу Profile и проверка first name, last name, email', async ({ page }) => {
         await page.goto('https://staging.fanfrick.com');
         await page.click('div.burger')
         const button = page.locator('.mobile-menu-content').locator('text=Profile settings');
@@ -30,6 +30,15 @@ test.describe('Profile Tests', () => {
             const input = document.querySelector('.input-field__body.te input[type="email"]');
             return input ? input.value : null;
         });
+        const nameValue = await page.evaluate(() => {
+            const input = document.querySelector('.input-field__body input[name="new_name"]');
+            return input ? input.value : null;
+        });
+
+        const lastNameValue = await page.evaluate(() => {
+            const input = document.querySelector('.input-field__body input[name="last_name"]');
+            return input ? input.value : null;
+        });
 
         expect(emailValue).toBe(process.env.USER_EMAIL);
 
@@ -37,6 +46,8 @@ test.describe('Profile Tests', () => {
             return JSON.parse(localStorage.getItem('user'));
         });
 
+        expect(nameValue).toBe(user["first_name"]);
+        expect(lastNameValue).toBe(user["last_name"]);
         expect(emailValue).toBe(user["email"]);
     });
 });

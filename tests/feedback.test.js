@@ -18,7 +18,11 @@ test.describe('Feedback Tests', () => {
         await input_email.fill('test@mail.ru');
 
         const textarea = page.locator('textarea[name="support-comment"]');
-        await textarea.fill('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, commodi!')
+
+        const date = new Date();
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+        await textarea.fill('Auto-test message ['+ formattedDate +']!')
         
         await send_button.click();
 
