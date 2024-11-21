@@ -30,11 +30,29 @@ test.describe('Ticket Tests', () => {
 
         const textarea = page.locator('textarea[name="support-comment"]');
         await textarea.fill('Auto-test message ['+ formattedDate +']!')
-        
+
         await send_button.click();
 
         const success_message = page.locator('.success-custom >> .check >> p');
         await expect(success_message).toContainText('Thank you for your message!');
         await success_message.isVisible()
+    });
+
+    test('1. Тест прикрепления картинки', async ({ page }) => {
+        await page.goto('https://staging.fanfrick.com');
+        await page.click('div.burger')
+        const button = page.locator('.mobile-menu-content').locator('text=Support');
+        await button.click();
+        await page.waitForURL('/support');
+
+        const fileInput = await page.locator('input[type="file"]');
+
+        const filePath = path.resolve(__dirname, 'img_for_test/vinyl.png');
+
+        await fileInput.setInputFiles(filePath);
+
+        const fileName = await page.locator('.preview-image-name >> p').textContent();
+
+        expect(fileName).toBe('vinyl.png');
     });
 });
