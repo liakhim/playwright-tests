@@ -77,14 +77,4 @@ test.describe('Tiktok Campaign Tests', () => {
 
         await save_and_publish_button.isDisabled(false)
     });
-
-    test('1. Тест создания кастомного линка', async ({ page }) => {
-        await page.goto('https://staging.fanfrick.com/new-campaign/tiktok');
-        const gate_link = page.locator(".gate-link")
-        const switcher = page.locator(".gate-stage-title::has=text('Campaign link')")
-        const tag_1_input = gate_link.locator(".input-wrap:has-text('Tag 1') >> input")
-        const tag_2_input = gate_link.locator(".input-wrap:has-text('Tag 2') >> input")
-        const save_custom_link_button = gate_link.locator(".save-button-block >> button")
-    })
-
 });

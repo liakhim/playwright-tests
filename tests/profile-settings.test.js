@@ -50,4 +50,22 @@ test.describe('Profile Tests', () => {
         expect(lastNameValue).toBe(user["last_name"]);
         expect(emailValue).toBe(user["email"]);
     });
+
+    test('1. Тест перехода на страницу Profile и отображения всех подписок', async ({ page }) => {
+        await page.goto('https://staging.fanfrick.com');
+        await page.click('div.burger')
+        const button = page.locator('.mobile-menu-content').locator('text=Profile settings');
+        await button.click();
+        await page.waitForURL('/profile-settings');
+
+        const user = await page.evaluate(() => {
+            return JSON.parse(localStorage.getItem('user'));
+        });
+
+        user.all_subscriptions.forEach(subscription => {
+            console.log(subscription.plan_name)
+            const subscription_line = page.locator('text="' + subscription.plan_name + '"');
+            expect(subscription_line.isVisible());
+        })
+    });
 });
