@@ -16,7 +16,9 @@ export class BaseTest {
             return localStorage.getItem('access_token_expire_in');
         });
 
+        // проверяем есть ли сгенерированный стейт и не истекло ли в этом стейте время жизни токена
         if (!fs.existsSync(stateFilePath) || ((accessTokenExpireIn - Date.now()) / 1000 / 60 <= 0)) {
+            // параметр который передается (требует ли логина проверяемая страница)
             if (shouldLogin) {
                 await this.loginAndSaveState();
             }
@@ -24,6 +26,7 @@ export class BaseTest {
     }
 
     async loginAndSaveState() {
+        // TODO: сделать проверку на нескольких пользователях (без подписки, с активной подпиской, с кастомной подпиской и т д)
         await login(this.page, process.env.USER_EMAIL, process.env.PASSWORD);
 
         // Сохранить состояние после успешного логина
